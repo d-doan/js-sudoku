@@ -12,9 +12,9 @@ hr {
 }
 
 #board {
-    width: 450px;
-    height: 450px;
-
+    width: 474px;
+    height: 474px;
+    border: 2px solid black;
     background-color: rgb(240, 227, 245);
     margin: 0 auto;
     display: flex;
@@ -22,24 +22,27 @@ hr {
 }
 
 #grid {
-    width: 146px;
-    height: 146px;
-    border: 2px solid black;
+    width: 156px;
+    height: 156px;
+    border: 1px solid black;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 #box {
-    width: 48px;
-    height: 48px;
-    border: 1px solid lightgray;
+    width: 50px;
+    height: 50px;
+    border: 1px solid black;
 
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#numbers {
-    width: 450px;
-    height: 50px;
+#numberBar {
+    width: 468px;
+    height: 52px;
+    border: 1px solid black;
 
     background-color: rgb(240, 227, 245);
     margin: 0 auto;
