@@ -24,7 +24,6 @@ function createGame() {
         number.id = i
         number.innerText = i;
         number.classList.add("number");
-        number.classList.add("number");
         document.getElementById("numberBar").appendChild(number);
     }
 }
