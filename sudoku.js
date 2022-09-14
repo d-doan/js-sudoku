@@ -53,13 +53,15 @@ function createGame() {
             grid.appendChild(square);
             if (board[i - 1][j - 1] == ".") {
                 square.innerText = " ";
+                square.readOnly = false;
             }
             else {
                 square.innerText = board[i - 1][j - 1];
+                square.readOnly = true;
             }
         }
     }
-    
+
     // create number selection bar
     for (let i = 1; i < 10; i++) {
         let number = document.createElement("div");
@@ -82,16 +84,16 @@ function selectNumber() {
 
 // Replace board square with selected num
 function replaceNum() {
-    if (selectedNum) {
+    if (selectedNum && !(this.readOnly)) {
         let x = parseInt(this.id[0]) - 1;
         let y = parseInt(this.id[1]) - 1;
-        if (solutionBoard[x][y] != selectedNum.innerText) {
+        if (solutionBoard[x][y] != selectedNum.innerText &&
+            this.innerText != selectedNum.innerText) {
             errors += 1;
             document.getElementById("errors").innerText = errors;
         }
         this.innerText = selectedNum.innerText;
         updateBoard(selectedNum.innerText, x, y);
-        console.log(board);
     }
 }
 
