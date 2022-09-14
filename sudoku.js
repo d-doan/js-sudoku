@@ -80,7 +80,7 @@ function selectNumber() {
     selectedNum.classList.add("selected-number");
 }
 
-//Replace board square with selected num
+// Replace board square with selected num
 function replaceNum() {
     if (selectedNum) {
         let x = parseInt(this.id[0]) - 1;
@@ -90,5 +90,14 @@ function replaceNum() {
             document.getElementById("errors").innerText = errors;
         }
         this.innerText = selectedNum.innerText;
+        updateBoard(selectedNum.innerText, x, y);
+        console.log(board);
     }
+}
+
+// Allows update on strings in Board bc strings are read only
+function updateBoard(num, x, y) {
+    let boardArr = board[x].split("");
+    boardArr[y] = num;
+    board[x] = boardArr.join("");
 }
