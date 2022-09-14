@@ -85,24 +85,10 @@ function replaceNum() {
     if (selectedNum) {
         let x = parseInt(this.id[0]) - 1;
         let y = parseInt(this.id[1]) - 1;
-        console.log("Board type:");
-        console.log(typeof solutionBoard[x][y]);
-        console.log("Number type:");
-        console.log(typeof selectedNum.innerText);
-        if (solutionBoard[x][y] == selectedNum.innerText) {
-            this.innerText = selectedNum.innerText
-        }
-        else {
-            errors += 1
+        if (solutionBoard[x][y] != selectedNum.innerText) {
+            errors += 1;
             document.getElementById("errors").innerText = errors;
         }
-        
-        //cover for unchangeable numbers at start
-        /*
         this.innerText = selectedNum.innerText;
-        board[x][y] = this.innerText; //read only??
-        console.log(board);
-        */
-
     }
 }
