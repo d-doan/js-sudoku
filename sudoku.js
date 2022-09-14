@@ -38,7 +38,11 @@ window.onload = function () {
 }
 
 function createGame() {
-
+    // Display number of errors when check button is pressed
+    let check = document.createElement("button");
+    check.innerText = "Check Board";
+    check.addEventListener('click', checkError);
+    document.getElementById("check").appendChild(check);
     // create starting sudoku board
     for (let i = 1; i <= 9; i++) {
         let grid = document.createElement("div");
@@ -90,7 +94,6 @@ function replaceNum() {
         if (solutionBoard[x][y] != selectedNum.innerText &&
             this.innerText != selectedNum.innerText) {
             errors += 1;
-            document.getElementById("errors").innerText = errors;
         }
         this.innerText = selectedNum.innerText;
         updateBoard(selectedNum.innerText, x, y);
@@ -102,4 +105,9 @@ function updateBoard(num, x, y) {
     let boardArr = board[x].split("");
     boardArr[y] = num;
     board[x] = boardArr.join("");
+}
+
+function checkError() {
+    document.getElementById("errors").innerText = "Errors: " + errors;
+    document.getElementById("errors").style.display = "block";
 }
