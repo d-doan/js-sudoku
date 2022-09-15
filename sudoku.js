@@ -126,7 +126,7 @@ function updateBoard(num, boardType, x, y) {
 
 function checkError() {
     document.getElementById("errText").innerHTML = "Errors: " + errors +
-    "<br></br>Total Errors Made: " + totErr;
+        "<br></br>Total Errors Made: " + totErr;
     if (JSON.stringify(board) == JSON.stringify(solutionBoard)) {
         document.getElementById("errText").innerText = "No errors, congrats!"; //make text green
     }
@@ -142,13 +142,13 @@ function generateBoards() {
         for (let j = 0; j < 9; j++) {
             let count = 0;
             //console.log(solutionBoard[i][j]);
-            while(solutionBoard[i][j] == '.') {
+            while (solutionBoard[i][j] == '.') {
                 val = Math.floor(Math.random() * 9 + 1);
                 count++;
                 if (validGrid(solutionBoard[i], val) &&
                     validCol(i, j, val) &&
                     validRow(i, j, val)) {
-                    
+
                     //console.log("Grid: " + validGrid(solutionBoard[i], val));
                     //console.log("Row: " + validRow(i, j, val));
                     //console.log("Col: " + validCol(i, j, val));
@@ -165,7 +165,7 @@ function generateBoards() {
                     //console.log(solutionBoard);
                     break;
                 }
-                
+
             }
             //console.log(solutionBoard[i][j]);
             //console.log(solutionBoard[8]);
@@ -200,12 +200,27 @@ function validCol(gridId, tileId, num) {
 
 // Check number is not already in the row
 function validRow(gridId, tileId, num) {
-    let gridRow = Math.floor(gridId/3) * 3;
-    let tileRow = Math.floor(tileId/3) * 3;
+    let gridRow = Math.floor(gridId / 3) * 3;
+    let tileRow = Math.floor(tileId / 3) * 3;
     let invalNums = "";
     for (let i = 0; i < 3; i++) {
         invalNums += solutionBoard[gridRow + i].substring(tileRow, tileRow + 3);
         //console.log(invalNums);
     }
     return !(invalNums.includes(num));
+}
+
+function removeNums(numReplace) {
+    while (numReplace > 0) {
+        validSpot = false;
+        while (!validSpot) {
+            let gridNum = Math.floor(Math.random() * 9);
+            let charIdx = Math.floor(Math.random() * 9);
+            if (board[gridNum][charIdx] != '.') {
+                updateBoard('.', board, gridNum, charIdx);
+                validSpot = true;
+            }
+        }
+        numReplace--;
+    }
 }
