@@ -9,7 +9,7 @@ button {
 }
 
 button:active {
-    background-color: rgb(245, 245, 245);
+    background-color: rgb(200, 200, 200);
 }
 
 hr {

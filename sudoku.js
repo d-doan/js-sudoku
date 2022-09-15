@@ -23,7 +23,7 @@ var board = [
 // holds solution board
 var solutionBoard = [
     "123456789",
-    "000000010",
+    "0000000.0",
     "987654321",
     "MATTHEWSU",
     "ABCDEFGHI",
@@ -127,7 +127,7 @@ function checkError() {
     document.getElementById("errText").innerHTML = "Errors: " + errors +
     "<br></br>Total Errors Made: " + totErr;
     if (JSON.stringify(board) == JSON.stringify(solutionBoard)) {
-        document.getElementById("errText").innerText = "No errors, congrats!";
+        document.getElementById("errText").innerText = "No errors, congrats!"; //make text green
     }
     document.getElementById("errOverlay").style.display = "block";
 }
@@ -135,3 +135,51 @@ function checkError() {
 function off() {
     document.getElementById("errOverlay").style.display = "none";
 }
+
+function generateFirstBoard() {
+    let choices = [1,2,3,4,5,6,7,8,9];
+
+    // Fisher-Yates algorithm to shuffle array
+    for (let i = choices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const temp = choices[i];
+        choices[i] = choices[j];
+        choices[j] = temp;
+    }
+    choices = choices.toString();    
+    return choices.replaceAll(',', '');;
+}
+
+function generateBoards() {
+
+}
+
+function validGrid(grid, num) {
+    return !(grid.includes(num));
+}
+
+function validCol(gridId, tileId, num) {
+    let gridCol = gridId % 3;
+    let tileCol = tileId % 3;
+    let invalNums = "";
+    for (i = gridCol; i < 9; i += 3) {
+        for (j = tileCol; j < 9; j += 3) {
+            invalNums += solutionBoard[i][j];
+        }
+    }
+    return !(invalNums.includes(num));
+}
+
+function validRow(gridId, tileId, num) {
+    let gridRow = Math.floor(gridId/3) * 3;
+    let tileRow = Math.floor(tileId/3) * 3;
+    let invalNums = "";
+    for (i = 0; i < 3; i++) {
+        invalNums += solutionBoard[gridRow].substring(tileRow, tileRow + 3);
+    }
+    return !(invalNums.includes(num));
+}
+
+//console.log(validGrid("234567891",1));
+
+console.log(validCol(2,0,9));
