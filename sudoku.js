@@ -141,15 +141,19 @@ function generateBoards() {
     for (let i = 0; i < 9; i++) {
         for (let j = 0; j < 9; j++) {
             let count = 0;
+            //console.log(solutionBoard[i][j]);
             while(solutionBoard[i][j] == '.') {
                 val = Math.floor(Math.random() * 9 + 1);
                 count++;
                 if (validGrid(solutionBoard[i], val) &&
                     validCol(i, j, val) &&
                     validRow(i, j, val)) {
+                    
+                    //console.log("Grid: " + validGrid(solutionBoard[i], val));
+                    //console.log("Row: " + validRow(i, j, val));
+                    //console.log("Col: " + validCol(i, j, val));
+                    //console.log(i + " " + j);
                     updateBoard(val, solutionBoard, i, j);
-                    //console.log(validRow(i, j, val));
-                    //console.log(i + " " + j)
                 }
                 if (count > 2000) {
                     console.log("resetting");
@@ -161,17 +165,19 @@ function generateBoards() {
                     //console.log(solutionBoard);
                     break;
                 }
-                //console.log(count);
+                
             }
+            //console.log(solutionBoard[i][j]);
+            //console.log(solutionBoard[8]);
             //console.log(i + " " + j)
         }
     }
     for (i = 0; i < 9; i++) {
-        console.log(validGrid(solutionBoard[8], solutionBoard[8][i]) &&
-        validCol(8, i, solutionBoard[8][i]) &&
-        validRow(8, i, solutionBoard[8][i]));
+        //console.log(validGrid(solutionBoard[8], solutionBoard[8][i]) &&
+        //validCol(8, i, solutionBoard[8][i]) &&
+        //validRow(8, i, solutionBoard[8][i]));
     }
-    console.log(solutionBoard);
+    //console.log(solutionBoard);
 }
 
 // Check number is not already in the grid
@@ -198,7 +204,8 @@ function validRow(gridId, tileId, num) {
     let tileRow = Math.floor(tileId/3) * 3;
     let invalNums = "";
     for (let i = 0; i < 3; i++) {
-        invalNums += solutionBoard[gridRow].substring(tileRow, tileRow + 3);
+        invalNums += solutionBoard[gridRow + i].substring(tileRow, tileRow + 3);
+        //console.log(invalNums);
     }
     return !(invalNums.includes(num));
 }
