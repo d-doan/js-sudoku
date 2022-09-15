@@ -1,5 +1,6 @@
 
 var errors = 0;
+var totErr = 0;
 
 var selectedNum;
 var squareSelected;
@@ -58,6 +59,7 @@ function createGame() {
             if (board[i - 1][j - 1] == ".") {
                 square.innerText = " ";
                 square.readOnly = false;
+                square.error = false;
             }
             else {
                 square.innerText = board[i - 1][j - 1];
@@ -91,9 +93,23 @@ function replaceNum() {
     if (selectedNum && !(this.readOnly)) {
         let x = parseInt(this.id[0]) - 1;
         let y = parseInt(this.id[1]) - 1;
+
+        // Error case: mark square as an error and increment error
         if (solutionBoard[x][y] != selectedNum.innerText &&
             this.innerText != selectedNum.innerText) {
-            errors += 1;
+            totErr += 1;
+            if (this.error == false) {
+                errors += 1;
+            }
+            this.error = true;
+        }
+
+        // Correct case: mark square as correct and decrement error
+        if (solutionBoard[x][y] == selectedNum.innerText &&
+            this.innerText != selectedNum.innerText &&
+            this.error == true) {
+            errors -= 1;
+            this.error = false;
         }
         this.innerText = selectedNum.innerText;
         updateBoard(selectedNum.innerText, x, y);
@@ -108,6 +124,14 @@ function updateBoard(num, x, y) {
 }
 
 function checkError() {
-    document.getElementById("errors").innerText = "Errors: " + errors;
-    document.getElementById("errors").style.display = "block";
+    document.getElementById("errText").innerHTML = "Errors: " + errors +
+    "<br></br>Total Errors Made: " + totErr;
+    if (JSON.stringify(board) == JSON.stringify(solutionBoard)) {
+        document.getElementById("errText").innerText = "No errors, congrats!";
+    }
+    document.getElementById("errOverlay").style.display = "block";
+}
+
+function off() {
+    document.getElementById("errOverlay").style.display = "none";
 }
