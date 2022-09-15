@@ -9,28 +9,28 @@ const numbers = document.querySelector('.number');
 // . represents empty space
 // each string represents a 3x3 tile
 var board = [
-    "123456789",
-    "0000000.0",
-    "987654321",
-    "MATTHEWSU",
-    "ABCDEFGHI",
-    "POKEMONGO",
-    ".....1111",
-    "8008135HA",
-    "KILLMEPLS"
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    "........."
 ]
 
 // holds solution board
 var solutionBoard = [
-    "123456789",
-    "0000000.0",
-    "987654321",
-    "MATTHEWSU",
-    "ABCDEFGHI",
-    "POKEMONGO",
-    ".....1111",
-    "8008135HA",
-    "KILLMEPLS"
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    "........."
 ]
 
 // Loades initial board upon window open
@@ -45,6 +45,7 @@ function createGame() {
     check.addEventListener('click', checkError);
     document.getElementById("check").appendChild(check);
     // create starting sudoku board
+    generateBoards();
     for (let i = 1; i <= 9; i++) {
         let grid = document.createElement("div");
         grid.id = i;
@@ -56,13 +57,13 @@ function createGame() {
             square.classList.add("square");
             square.addEventListener('click', replaceNum);
             grid.appendChild(square);
-            if (board[i - 1][j - 1] == ".") {
+            if (solutionBoard[i - 1][j - 1] == ".") {
                 square.innerText = " ";
                 square.readOnly = false;
                 square.error = false;
             }
             else {
-                square.innerText = board[i - 1][j - 1];
+                square.innerText = solutionBoard[i - 1][j - 1];
                 square.readOnly = true;
             }
         }
@@ -112,15 +113,15 @@ function replaceNum() {
             this.error = false;
         }
         this.innerText = selectedNum.innerText;
-        updateBoard(selectedNum.innerText, x, y);
+        updateBoard(selectedNum.innerText, board, x, y);
     }
 }
 
 // Allows update on strings in Board bc strings are read only
-function updateBoard(num, x, y) {
-    let boardArr = board[x].split("");
+function updateBoard(num, boardType, x, y) {
+    let boardArr = boardType[x].split("");
     boardArr[y] = num;
-    board[x] = boardArr.join("");
+    boardType[x] = boardArr.join("");
 }
 
 function checkError() {
@@ -136,50 +137,68 @@ function off() {
     document.getElementById("errOverlay").style.display = "none";
 }
 
-function generateFirstBoard() {
-    let choices = [1,2,3,4,5,6,7,8,9];
-
-    // Fisher-Yates algorithm to shuffle array
-    for (let i = choices.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        const temp = choices[i];
-        choices[i] = choices[j];
-        choices[j] = temp;
-    }
-    choices = choices.toString();    
-    return choices.replaceAll(',', '');;
-}
-
 function generateBoards() {
-
+    for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+            let count = 0;
+            while(solutionBoard[i][j] == '.') {
+                val = Math.floor(Math.random() * 9 + 1);
+                count++;
+                if (validGrid(solutionBoard[i], val) &&
+                    validCol(i, j, val) &&
+                    validRow(i, j, val)) {
+                    updateBoard(val, solutionBoard, i, j);
+                    //console.log(validRow(i, j, val));
+                    //console.log(i + " " + j)
+                }
+                if (count > 2000) {
+                    console.log("resetting");
+                    for (k = 1; k < 9; k++) {
+                        solutionBoard[k] = ".........";
+                    }
+                    j = -1;
+                    i = 0;
+                    //console.log(solutionBoard);
+                    break;
+                }
+                //console.log(count);
+            }
+            //console.log(i + " " + j)
+        }
+    }
+    for (i = 0; i < 9; i++) {
+        console.log(validGrid(solutionBoard[8], solutionBoard[8][i]) &&
+        validCol(8, i, solutionBoard[8][i]) &&
+        validRow(8, i, solutionBoard[8][i]));
+    }
+    console.log(solutionBoard);
 }
 
+// Check number is not already in the grid
 function validGrid(grid, num) {
     return !(grid.includes(num));
 }
 
+// Check number is not already in the column
 function validCol(gridId, tileId, num) {
     let gridCol = gridId % 3;
     let tileCol = tileId % 3;
     let invalNums = "";
-    for (i = gridCol; i < 9; i += 3) {
-        for (j = tileCol; j < 9; j += 3) {
+    for (let i = gridCol; i < 9; i += 3) {
+        for (let j = tileCol; j < 9; j += 3) {
             invalNums += solutionBoard[i][j];
         }
     }
     return !(invalNums.includes(num));
 }
 
+// Check number is not already in the row
 function validRow(gridId, tileId, num) {
     let gridRow = Math.floor(gridId/3) * 3;
     let tileRow = Math.floor(tileId/3) * 3;
     let invalNums = "";
-    for (i = 0; i < 3; i++) {
+    for (let i = 0; i < 3; i++) {
         invalNums += solutionBoard[gridRow].substring(tileRow, tileRow + 3);
     }
     return !(invalNums.includes(num));
 }
-
-//console.log(validGrid("234567891",1));
-
-console.log(validCol(2,0,9));
