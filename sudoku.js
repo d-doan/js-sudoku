@@ -35,7 +35,7 @@ var solutionBoard = [
 
 // Loades initial board upon window open
 window.onload = function () {
-    createGame(45);
+    
 }
 
 function createGame(diff) {
@@ -49,9 +49,13 @@ function createGame(diff) {
 
     removeNums(diff);
 
-    //let htmlBoard = document.createElement("div");
-    //htmlBoard.id = "board";
-    //document.body.appendChild(htmlBoard);
+    let htmlBoard = document.createElement("div");
+    let numBar = document.createElement("div");
+    htmlBoard.id = "board";
+    numBar.id = "numberBar";
+    document.body.appendChild(htmlBoard);
+    document.body.appendChild(numBar);
+
     for (let i = 1; i <= 9; i++) {
         let grid = document.createElement("div");
         grid.id = i;
