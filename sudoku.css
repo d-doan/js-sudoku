@@ -52,6 +52,23 @@ hr {
     flex-wrap: wrap;
 }
 
+.diff {
+    border: 2px solid black;
+    padding: 5px;
+}
+
+.difficulties {
+    border: 3px;
+    padding: 5px;
+}
+
+.diffBox {
+    width: 10%;
+    display: inline-block;
+    padding: 5px;
+    border: 2px;
+}
+
 .grid {
     width: 156px;
     height: 156px;

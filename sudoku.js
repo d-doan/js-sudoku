@@ -20,6 +20,8 @@ var board = [
     "........."
 ]
 
+var startingBoard;
+
 // holds solution board
 var solutionBoard = [
     ".........",
@@ -35,10 +37,10 @@ var solutionBoard = [
 
 // Loades initial board upon window open
 window.onload = function () {
-    createGame();
+    createGame(45);
 }
 
-function createGame() {
+function createGame(diff) {
     // Display number of errors when check button is pressed
     let check = document.createElement("button");
     check.innerText = "Check Board";
@@ -46,8 +48,12 @@ function createGame() {
     document.getElementById("check").appendChild(check);
     // create starting sudoku board
     generateBoards();
-    removeNums(45);
-    console.log(solutionBoard);
+
+    removeNums(diff);
+
+    //let htmlBoard = document.createElement("div");
+    //htmlBoard.id = "board";
+    //document.body.appendChild(htmlBoard);
     for (let i = 1; i <= 9; i++) {
         let grid = document.createElement("div");
         grid.id = i;
@@ -71,6 +77,8 @@ function createGame() {
             }
         }
     }
+    // copies board into starting board
+    startingBoard = [...board];
 
     // create number selection bar
     for (let i = 1; i < 10; i++) {
@@ -154,36 +162,19 @@ function generateBoards() {
                 if (validGrid(solutionBoard[i], val) &&
                     validCol(i, j, val) &&
                     validRow(i, j, val)) {
-
-                    //console.log("Grid: " + validGrid(solutionBoard[i], val));
-                    //console.log("Row: " + validRow(i, j, val));
-                    //console.log("Col: " + validCol(i, j, val));
-                    //console.log(i + " " + j);
                     updateBoard(val, solutionBoard, i, j);
                 }
                 if (count > 2000) {
-                    //console.log("resetting");
                     for (k = 1; k < 9; k++) {
                         solutionBoard[k] = ".........";
                     }
                     j = -1;
                     i = 0;
-                    //console.log(solutionBoard);
                     break;
                 }
-
             }
-            //console.log(solutionBoard[i][j]);
-            //console.log(solutionBoard[8]);
-            //console.log(i + " " + j)
         }
     }
-    for (i = 0; i < 9; i++) {
-        //console.log(validGrid(solutionBoard[8], solutionBoard[8][i]) &&
-        //validCol(8, i, solutionBoard[8][i]) &&
-        //validRow(8, i, solutionBoard[8][i]));
-    }
-    //console.log(solutionBoard);
 }
 
 // Check number is not already in the grid
@@ -216,6 +207,7 @@ function validRow(gridId, tileId, num) {
     return !(invalNums.includes(num));
 }
 
+// replaces all except numReplace spaces with blanks
 function removeNums(numReplace) {
     while (numReplace > 0) {
         validSpot = false;
@@ -229,4 +221,8 @@ function removeNums(numReplace) {
         }
         numReplace--;
     }
+}
+
+function resetBoard() {
+    board = [...startingBoard];
 }
