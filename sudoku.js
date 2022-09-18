@@ -20,8 +20,6 @@ var board = [
     "........."
 ]
 
-var startingBoard;
-
 // holds solution board
 var solutionBoard = [
     ".........",
@@ -77,8 +75,6 @@ function createGame(diff) {
             }
         }
     }
-    // copies board into starting board
-    startingBoard = [...board];
 
     // create number selection bar
     for (let i = 1; i < 10; i++) {
@@ -224,5 +220,16 @@ function removeNums(numReplace) {
 }
 
 function resetBoard() {
-    board = [...startingBoard];
+
+    errors = 0;
+    totErr = 0;
+    for (let i = 1; i <=9; i++) {
+        for (let j = 1; j <=9; j++) {
+            currentTile = document.getElementById(''+ i + j);
+            if (currentTile.readOnly == false) {
+                updateBoard('.', board, i, j);
+                currentTile.innerText = ' ';
+            }
+        }
+    }
 }
