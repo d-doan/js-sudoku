@@ -46,6 +46,8 @@ function createGame() {
     document.getElementById("check").appendChild(check);
     // create starting sudoku board
     generateBoards();
+    removeNums(45);
+    console.log(solutionBoard);
     for (let i = 1; i <= 9; i++) {
         let grid = document.createElement("div");
         grid.id = i;
@@ -57,13 +59,14 @@ function createGame() {
             square.classList.add("square");
             square.addEventListener('click', replaceNum);
             grid.appendChild(square);
-            if (solutionBoard[i - 1][j - 1] == ".") {
+            if (board[i - 1][j - 1] == ".") {
                 square.innerText = " ";
                 square.readOnly = false;
                 square.error = false;
             }
             else {
                 square.innerText = solutionBoard[i - 1][j - 1];
+                updateBoard(solutionBoard[i - 1][j - 1], board, i - 1, j - 1);
                 square.readOnly = true;
             }
         }
@@ -113,6 +116,7 @@ function replaceNum() {
             this.error = false;
         }
         this.innerText = selectedNum.innerText;
+        this.style.color = "red";
         updateBoard(selectedNum.innerText, board, x, y);
     }
 }
@@ -128,7 +132,9 @@ function checkError() {
     document.getElementById("errText").innerHTML = "Errors: " + errors +
         "<br></br>Total Errors Made: " + totErr;
     if (JSON.stringify(board) == JSON.stringify(solutionBoard)) {
-        document.getElementById("errText").innerText = "No errors, congrats!"; //make text green
+        document.getElementById("errText").style.color = "green";
+        document.getElementById("errText").innerHTML = "No errors, congrats!" +
+        "<br></br>Total Errors Made: " + totErr;
     }
     document.getElementById("errOverlay").style.display = "block";
 }
@@ -156,7 +162,7 @@ function generateBoards() {
                     updateBoard(val, solutionBoard, i, j);
                 }
                 if (count > 2000) {
-                    console.log("resetting");
+                    //console.log("resetting");
                     for (k = 1; k < 9; k++) {
                         solutionBoard[k] = ".........";
                     }
@@ -216,8 +222,8 @@ function removeNums(numReplace) {
         while (!validSpot) {
             let gridNum = Math.floor(Math.random() * 9);
             let charIdx = Math.floor(Math.random() * 9);
-            if (board[gridNum][charIdx] != '.') {
-                updateBoard('.', board, gridNum, charIdx);
+            if (board[gridNum][charIdx] == '.') {
+                updateBoard(' ', board, gridNum, charIdx);
                 validSpot = true;
             }
         }
