@@ -35,10 +35,11 @@ var solutionBoard = [
 
 // Loades initial board upon window open
 window.onload = function () {
-    
+
 }
 
 function createGame(diff) {
+    document.getElementById("difficultyList").style.display = "none";
     // Display number of errors when check button is pressed
     let check = document.createElement("button");
     check.innerText = "Check Board";
@@ -142,7 +143,7 @@ function checkError() {
     if (JSON.stringify(board) == JSON.stringify(solutionBoard)) {
         document.getElementById("errText").style.color = "green";
         document.getElementById("errText").innerHTML = "No errors, congrats!" +
-        "<br></br>Total Errors Made: " + totErr;
+            "<br></br>Total Errors Made: " + totErr;
     }
     document.getElementById("errOverlay").style.display = "block";
 }
@@ -227,9 +228,9 @@ function resetBoard() {
 
     errors = 0;
     totErr = 0;
-    for (let i = 1; i <=9; i++) {
-        for (let j = 1; j <=9; j++) {
-            currentTile = document.getElementById(''+ i + j);
+    for (let i = 1; i <= 9; i++) {
+        for (let j = 1; j <= 9; j++) {
+            currentTile = document.getElementById('' + i + j);
             if (currentTile.readOnly == false) {
                 updateBoard('.', board, i, j);
                 currentTile.innerText = ' ';
