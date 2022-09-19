@@ -20,6 +20,8 @@ var board = [
 
 var startingBoard;
 
+var moves;
+
 var emptyBoard = [
     ".........",
     ".........",
@@ -47,11 +49,13 @@ var solutionBoard = [
 
 // Loades initial board upon window open
 window.onload = function () {
-
+    document.getElementById("gameControls").style.display = "none";
 }
 
 function createGame(diff) {
+    moves = [];
     document.getElementById("difficultyList").style.display = "none";
+    document.getElementById("gameControls").style.display = "block";
     // Display number of errors when check button is pressed
     let check = document.createElement("button");
     check.innerText = "Check Board";
@@ -62,7 +66,7 @@ function createGame(diff) {
     generateBoards();
 
     // removes specified number from solution board
-    removeNums(77);
+    removeNums(diff);
 
     let htmlBoard = document.createElement("div");
     let numBar = document.createElement("div");
@@ -122,6 +126,7 @@ function replaceNum() {
         let x = parseInt(this.id[0]) - 1;
         let y = parseInt(this.id[1]) - 1;
         this.error = true;
+        moves.push(this.id);
         this.innerText = selectedNum.innerText;
         this.style.color = "red";
         updateBoard(selectedNum.innerText, board, x, y);
@@ -167,7 +172,7 @@ function checkError() {
     document.getElementById("errText").style.color = "red";
     document.getElementById("errText").innerHTML = "Errors: " + errors +
         "<br></br>Total Errors Made: " + totErr;
-    if (JSON.stringify(board) == JSON.stringify(solutionBoard)) {
+    if (errors == 0 && checkFull(board)) {
         document.getElementById("errText").style.color = "green";
         document.getElementById("errText").innerHTML = "No errors, congrats!" +
             "<br></br>Total Errors Made: " + totErr;
@@ -276,4 +281,21 @@ function delGame() {
     errors = 0;
     totErr = 0;
     document.getElementById('checkButton').remove();
+}
+
+// checks board for empty tiles
+function checkFull(boardType) {
+    for (let i = 0; i < 9; i++) {
+        if (boardType[i].includes('.')) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function undoMove() {
+    tileId = moves[moves.length - 1];
+    moves.pop();
+    document.getElementById(tileId).innerText = ' ';
+    updateBoard('.', board, tileId[0] - 1, tileId[1]) - 1;
 }

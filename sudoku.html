@@ -19,18 +19,16 @@
     </div>
     <hr>
     <div class="difficulties" id="difficultyList">
-        <div class="diffBox">
-            <div class="diff" onclick="createGame(36)">Easy</div>
-        </div>
-        <div class="diffBox">
-            <div class="diff" onclick="createGame(26)">Medium</div>
-        </div>
-        <div class="diffBox">
-            <div class="diff" onclick="createGame(17)">Hard</div>
-        </div>
+        <div class="diff" onclick="createGame(45)">Easy</div>
+        <div class="diff" onclick="createGame(36)">Medium</div>
+        <div class="diff" onclick="createGame(26)">Hard</div>
+        <div class="diff" onclick="createGame(17)">Extreme</div>
     </div>
-    <button onclick="resetBoard()">Reset</button>
-    <button onclick="delGame()">New Game</button>
+    <div id="gameControls">
+        <button onclick="resetBoard()">Reset</button>
+        <button onclick="delGame()">New Game</button>
+        <button onclick="undoMove()">Undo</button>
+    </div>
     </div>
     <br>
 
