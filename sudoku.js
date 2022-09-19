@@ -20,7 +20,12 @@ var board = [
 
 var startingBoard;
 
+// holds previous moves for undo button
 var moves;
+
+// handle timer
+var timerVar;
+var totalSeconds;
 
 var emptyBoard = [
     ".........",
@@ -49,7 +54,12 @@ var solutionBoard = [
 
 // Loades initial board upon window open
 window.onload = function () {
-    document.getElementById("gameControls").style.display = "none";
+    document.getElementById("difficultyList").style.display = "none";
+}
+
+function start() {
+    document.getElementById("difficultyList").style.display = "block";
+    document.getElementById("start").style.display = "none";
 }
 
 function createGame(diff) {
@@ -67,6 +77,14 @@ function createGame(diff) {
 
     // removes specified number from solution board
     removeNums(diff);
+
+    // create timer
+    let timer = document.createElement("div");
+    timer.id = "timer";
+    document.getElementById("gameControls").appendChild(timer);
+    timerVar = setInterval(countTimer, 1000);
+    totalSeconds = 0;
+
 
     let htmlBoard = document.createElement("div");
     let numBar = document.createElement("div");
@@ -109,6 +127,7 @@ function createGame(diff) {
         number.classList.add("number");
         document.getElementById("numberBar").appendChild(number);
     }
+
 }
 
 // Handles selecting a number from number bar
@@ -118,6 +137,15 @@ function selectNumber() {
     }
     selectedNum = this;
     selectedNum.classList.add("selected-number");
+    for (let i = 1; i <= 9; i++) {
+        for (let j = 1; j <= 9; j++) {
+            curr = document.getElementById('' + i + j);
+            curr.classList.remove("selected-number");
+            if (curr.innerText == this.innerText) {
+                curr.classList.add("selected-number");
+            }
+        }
+    }
 }
 
 // Replace board square with selected num
@@ -129,6 +157,7 @@ function replaceNum() {
         moves.push(this.id);
         this.innerText = selectedNum.innerText;
         this.style.color = "red";
+        this.classList.add("selected-number");
         updateBoard(selectedNum.innerText, board, x, y);
     }
 }
@@ -173,6 +202,7 @@ function checkError() {
     document.getElementById("errText").innerHTML = "Errors: " + errors +
         "<br></br>Total Errors Made: " + totErr;
     if (errors == 0 && checkFull(board)) {
+        clearInterval(timerVar);
         document.getElementById("errText").style.color = "green";
         document.getElementById("errText").innerHTML = "No errors, congrats!" +
             "<br></br>Total Errors Made: " + totErr;
@@ -281,6 +311,10 @@ function delGame() {
     errors = 0;
     totErr = 0;
     document.getElementById('checkButton').remove();
+    clearInterval(timerVar);
+    document.getElementById('timer').remove();
+    document.getElementById('gameControls').style.display = "none";
+    //console.log('hit');
 }
 
 // checks board for empty tiles
@@ -298,4 +332,18 @@ function undoMove() {
     moves.pop();
     document.getElementById(tileId).innerText = ' ';
     updateBoard('.', board, tileId[0] - 1, tileId[1]) - 1;
+}
+
+function countTimer() {
+    ++totalSeconds;
+    var hour = Math.floor(totalSeconds / 3600);
+    var minute = Math.floor((totalSeconds - hour * 3600) / 60);
+    var seconds = totalSeconds - (hour * 3600 + minute * 60);
+    if (hour < 10)
+        hour = "0" + hour;
+    if (minute < 10)
+        minute = "0" + minute;
+    if (seconds < 10)
+        seconds = "0" + seconds;
+    document.getElementById("timer").innerHTML = hour + ":" + minute + ":" + seconds;
 }

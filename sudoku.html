@@ -24,10 +24,29 @@
         <div class="diff" onclick="createGame(26)">Hard</div>
         <div class="diff" onclick="createGame(17)">Extreme</div>
     </div>
-    <div id="gameControls">
+    <div id="gameControls" style="display: none">
         <button onclick="resetBoard()">Reset</button>
         <button onclick="delGame()">New Game</button>
         <button onclick="undoMove()">Undo</button>
+    </div>
+    <div id="start">
+        <div id="startText">
+            Hello, and welcome to Sudoku!<br><br>
+            This is a game that is played on a 9 x 9 board of squares.
+            The board is divided into 3 x 3 squares, 9 in total.
+            The goal of Sudoku is to fill in all of the tiles on the board
+            such that every square, row, and column has the numbers 1 through 9. <br><br>
+
+            Of course, this means that each number can only be used once in each square,
+            row, and column. This site offers four difficulties of randomly generated boards,
+            with harder boards containing fewer starting numbers. <br><br>
+
+            But don't worry! Every board will have a solution. Follow the logic of the
+            numbers on the board and solve the board! <br><br>
+
+            If you understand these instructions, click the "OK" button below to begin.
+        </div>
+        <button onclick="start()">OK</button>
     </div>
     </div>
     <br>
