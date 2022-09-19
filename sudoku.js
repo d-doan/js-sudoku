@@ -136,33 +136,31 @@ function updateBoard(num, boardType, x, y) {
 }
 
 function checkError() {
-    //console.log(board);
     errors = 0;
     for (let i = 1; i <= 9; i++) {
         for (let j = 1; j <= 9; j++) {
+            errFlag = false;
             currentTile = document.getElementById('' + i + j);
             let gridIdx = i - 1;
             let tileIdx = j - 1;
-            //console.log(currentTile.id);
-            if (currentTile.readOnly == false) {
-                let val = board[gridIdx][tileIdx];
-                updateBoard('a', board, gridIdx, tileIdx);
-                //bugs: no errors detected when only one empty space in box, placing correct num is counted as error
-                console.log(val);
-                console.log(validGrid(board[gridIdx], val));
-                console.log(validCol(gridIdx, tileIdx, val));
-                console.log(validRow(gridIdx, tileIdx, val));
-                console.log(currentTile.error);
-                if (!(validGrid(board[gridIdx], val) &&
-                    validCol(gridIdx, tileIdx, val) &&
-                    validRow(gridIdx, tileIdx, val))) {
-                    errors++;
-                    if (currentTile.error == true) {
-                        totErr++;
-                    }
-                    currentTile.error = false;
+            let val = board[gridIdx][tileIdx];
+            if (val == '.') {
+                continue;
+            }
+            updateBoard('x', board, gridIdx, tileIdx);
+
+            if (!(validGrid(board[gridIdx], val) &&
+                validCol(board, gridIdx, tileIdx, val) &&
+                validRow(board, gridIdx, tileIdx, val))) {
+                if (currentTile.error == true) {
+                    totErr++;
+                    errFlag = true;
                 }
-                updateBoard(val, board, gridIdx, tileIdx);
+                currentTile.error = false;
+            }
+            updateBoard(val, board, gridIdx, tileIdx);
+            if (errFlag == true) {
+                errors++;
             }
         }
     }
@@ -175,7 +173,6 @@ function checkError() {
             "<br></br>Total Errors Made: " + totErr;
     }
     document.getElementById("errOverlay").style.display = "block";
-    console.log(solutionBoard);
 }
 
 function off() {
@@ -190,8 +187,8 @@ function generateBoards() {
                 val = Math.floor(Math.random() * 9 + 1);
                 count++;
                 if (validGrid(solutionBoard[i], val) &&
-                    validCol(i, j, val) &&
-                    validRow(i, j, val)) {
+                    validCol(solutionBoard, i, j, val) &&
+                    validRow(solutionBoard, i, j, val)) {
                     updateBoard(val, solutionBoard, i, j);
                 }
                 if (count > 2000) {
@@ -213,26 +210,25 @@ function validGrid(grid, num) {
 }
 
 // Check number is not already in the column
-function validCol(gridId, tileId, num) {
+function validCol(boardType, gridId, tileId, num) {
     let gridCol = gridId % 3;
     let tileCol = tileId % 3;
     let invalNums = "";
     for (let i = gridCol; i < 9; i += 3) {
         for (let j = tileCol; j < 9; j += 3) {
-            invalNums += solutionBoard[i][j];
+            invalNums += boardType[i][j];
         }
     }
     return !(invalNums.includes(num));
 }
 
 // Check number is not already in the row
-function validRow(gridId, tileId, num) {
+function validRow(boardType, gridId, tileId, num) {
     let gridRow = Math.floor(gridId / 3) * 3;
     let tileRow = Math.floor(tileId / 3) * 3;
     let invalNums = "";
     for (let i = 0; i < 3; i++) {
-        invalNums += solutionBoard[gridRow + i].substring(tileRow, tileRow + 3);
-        //console.log(invalNums);
+        invalNums += boardType[gridRow + i].substring(tileRow, tileRow + 3);
     }
     return !(invalNums.includes(num));
 }
