@@ -1,5 +1,3 @@
-
-var errors = 0;
 var totErr = 0;
 
 var selectedNum;
@@ -9,6 +7,20 @@ const numbers = document.querySelector('.number');
 // . represents empty space
 // each string represents a 3x3 tile
 var board = [
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    ".........",
+    "........."
+]
+
+var startingBoard;
+
+var emptyBoard = [
     ".........",
     ".........",
     ".........",
@@ -43,12 +55,14 @@ function createGame(diff) {
     // Display number of errors when check button is pressed
     let check = document.createElement("button");
     check.innerText = "Check Board";
+    check.id = "checkButton";
     check.addEventListener('click', checkError);
     document.getElementById("check").appendChild(check);
     // create starting sudoku board
     generateBoards();
 
-    removeNums(diff);
+    // removes specified number from solution board
+    removeNums(77);
 
     let htmlBoard = document.createElement("div");
     let numBar = document.createElement("div");
@@ -71,7 +85,7 @@ function createGame(diff) {
             if (board[i - 1][j - 1] == ".") {
                 square.innerText = " ";
                 square.readOnly = false;
-                square.error = false;
+                square.error = true;
             }
             else {
                 square.innerText = solutionBoard[i - 1][j - 1];
@@ -80,6 +94,7 @@ function createGame(diff) {
             }
         }
     }
+    startingBoard = [...board];
 
     // create number selection bar
     for (let i = 1; i < 10; i++) {
@@ -106,24 +121,7 @@ function replaceNum() {
     if (selectedNum && !(this.readOnly)) {
         let x = parseInt(this.id[0]) - 1;
         let y = parseInt(this.id[1]) - 1;
-
-        // Error case: mark square as an error and increment error
-        if (solutionBoard[x][y] != selectedNum.innerText &&
-            this.innerText != selectedNum.innerText) {
-            totErr += 1;
-            if (this.error == false) {
-                errors += 1;
-            }
-            this.error = true;
-        }
-
-        // Correct case: mark square as correct and decrement error
-        if (solutionBoard[x][y] == selectedNum.innerText &&
-            this.innerText != selectedNum.innerText &&
-            this.error == true) {
-            errors -= 1;
-            this.error = false;
-        }
+        this.error = true;
         this.innerText = selectedNum.innerText;
         this.style.color = "red";
         updateBoard(selectedNum.innerText, board, x, y);
@@ -138,6 +136,37 @@ function updateBoard(num, boardType, x, y) {
 }
 
 function checkError() {
+    //console.log(board);
+    errors = 0;
+    for (let i = 1; i <= 9; i++) {
+        for (let j = 1; j <= 9; j++) {
+            currentTile = document.getElementById('' + i + j);
+            let gridIdx = i - 1;
+            let tileIdx = j - 1;
+            //console.log(currentTile.id);
+            if (currentTile.readOnly == false) {
+                let val = board[gridIdx][tileIdx];
+                updateBoard('a', board, gridIdx, tileIdx);
+                //bugs: no errors detected when only one empty space in box, placing correct num is counted as error
+                console.log(val);
+                console.log(validGrid(board[gridIdx], val));
+                console.log(validCol(gridIdx, tileIdx, val));
+                console.log(validRow(gridIdx, tileIdx, val));
+                console.log(currentTile.error);
+                if (!(validGrid(board[gridIdx], val) &&
+                    validCol(gridIdx, tileIdx, val) &&
+                    validRow(gridIdx, tileIdx, val))) {
+                    errors++;
+                    if (currentTile.error == true) {
+                        totErr++;
+                    }
+                    currentTile.error = false;
+                }
+                updateBoard(val, board, gridIdx, tileIdx);
+            }
+        }
+    }
+    document.getElementById("errText").style.color = "red";
     document.getElementById("errText").innerHTML = "Errors: " + errors +
         "<br></br>Total Errors Made: " + totErr;
     if (JSON.stringify(board) == JSON.stringify(solutionBoard)) {
@@ -146,6 +175,7 @@ function checkError() {
             "<br></br>Total Errors Made: " + totErr;
     }
     document.getElementById("errOverlay").style.display = "block";
+    console.log(solutionBoard);
 }
 
 function off() {
@@ -156,7 +186,6 @@ function generateBoards() {
     for (let i = 0; i < 9; i++) {
         for (let j = 0; j < 9; j++) {
             let count = 0;
-            //console.log(solutionBoard[i][j]);
             while (solutionBoard[i][j] == '.') {
                 val = Math.floor(Math.random() * 9 + 1);
                 count++;
@@ -224,17 +253,31 @@ function removeNums(numReplace) {
     }
 }
 
+// resets back to starting board
 function resetBoard() {
-
+    board = [...startingBoard];
     errors = 0;
     totErr = 0;
     for (let i = 1; i <= 9; i++) {
         for (let j = 1; j <= 9; j++) {
             currentTile = document.getElementById('' + i + j);
             if (currentTile.readOnly == false) {
-                updateBoard('.', board, i, j);
+                updateBoard('.', board, i - 1, j - 1);
                 currentTile.innerText = ' ';
+                currentTile.error = false;
             }
         }
     }
+}
+
+// deletes html elements for board and numBar
+function delGame() {
+    board = [...emptyBoard];
+    solutionBoard = [...emptyBoard];
+    document.getElementById('board').remove();
+    document.getElementById('numberBar').remove();
+    document.getElementById("difficultyList").style.display = "block";
+    errors = 0;
+    totErr = 0;
+    document.getElementById('checkButton').remove();
 }
