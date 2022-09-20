@@ -6,8 +6,6 @@ var squareSelected;
 let noteMode = false;
 let eraseMode = false;
 
-const numbers = document.querySelector('.number');
-
 // . represents empty space
 // each string represents a 3x3 tile
 var board = [
@@ -24,9 +22,6 @@ var board = [
 
 // used for reset button
 var startingBoard;
-
-// holds previous moves for undo button
-var moves;
 
 // handle timer
 var timerVar;
@@ -70,14 +65,13 @@ function start() {
 
 // creates initial board and creates game buttons
 function createGame(diff) {
-    moves = [];
     document.getElementById("difficultyList").style.display = "none";
     document.getElementById("gameControls").style.display = "block";
     // Display number of errors when check button is pressed
     let check = document.createElement("button");
     check.innerText = "Check Board";
     check.id = "checkButton";
-    check.addEventListener('click', checkError);
+    check.addEventListener("click", checkError);
     document.getElementById("check").appendChild(check);
     // create starting sudoku board
     generateBoards();
@@ -107,12 +101,12 @@ function createGame(diff) {
         document.getElementById("board").appendChild(grid);
         for (let j = 1; j <= 9; j++) {
             let square = document.createElement("div");
-            square.id = "" + i + j;
+            square.id = '' + i + j;
             square.classList.add("square");
-            square.addEventListener('click', replaceNum);
+            square.addEventListener("click", replaceNum);
             grid.appendChild(square);
-            if (board[i - 1][j - 1] == ".") {
-                square.innerText = " ";
+            if (board[i - 1][j - 1] == '.') {
+                square.innerText = ' ';
                 square.readOnly = false;
                 square.error = true;
                 square.notes = false;
@@ -127,6 +121,22 @@ function createGame(diff) {
     // copies board into startingBoard
     startingBoard = [...board];
 
+    // create erase div at end of numberBar
+    let erase = document.createElement("div");
+    erase.classList.add("number");
+    erase.innerText = "Erase";
+    erase.id = "erase";
+    erase.addEventListener("click", eraseNum);
+    document.getElementById("numberBar").appendChild(erase);
+
+    // create note div at end of numberBar
+    let note = document.createElement("div");
+    note.classList.add("number");
+    note.innerText = "Note";
+    note.id = "note";
+    note.addEventListener("click", toggleNote);
+    document.getElementById("numberBar").appendChild(note);
+
     // create number selection bar
     for (let i = 1; i < 10; i++) {
         let number = document.createElement("div");
@@ -136,21 +146,6 @@ function createGame(diff) {
         number.classList.add("number");
         document.getElementById("numberBar").appendChild(number);
     }
-    // create note div at end of numberBar
-    let note = document.createElement("div");
-    note.classList.add("number");
-    note.innerText = "Note";
-    note.id = "note";
-    note.addEventListener("click", toggleNote);
-    document.getElementById("numberBar").appendChild(note);
-
-    // create erase div at end of numberBar
-    let erase = document.createElement("div");
-    erase.classList.add("number");
-    erase.innerText = "Erase";
-    erase.id = "erase";
-    erase.addEventListener("click", eraseNum);
-    document.getElementById("numberBar").appendChild(erase);
 }
 
 // Handles selecting a number from number bar
@@ -179,7 +174,6 @@ function replaceNum() {
     if (eraseMode == true && !this.readOnly) {
         if (this.notes == true) {
             let gridId = '' + this.id + 'g';
-            let grid = document.getElementById(gridId)
             document.getElementById(gridId).remove();
             this.notes = false;
         }
@@ -220,7 +214,6 @@ function replaceNum() {
             let x = parseInt(this.id[0]) - 1;
             let y = parseInt(this.id[1]) - 1;
             this.error = true;
-            moves.push(this.id);
             this.innerText = selectedNum.innerText;
             this.style.color = "red";
             this.classList.add("selectedNumber");
@@ -232,9 +225,9 @@ function replaceNum() {
 
 // Allows update on strings in Board bc strings are read only
 function updateBoard(num, boardType, x, y) {
-    let boardArr = boardType[x].split("");
+    let boardArr = boardType[x].split('');
     boardArr[y] = num;
-    boardType[x] = boardArr.join("");
+    boardType[x] = boardArr.join('');
 }
 
 // checks for errors in current board
@@ -319,7 +312,7 @@ function validGrid(grid, num) {
 function validCol(boardType, gridId, tileId, num) {
     let gridCol = gridId % 3;
     let tileCol = tileId % 3;
-    let invalNums = "";
+    let invalNums = '';
     for (let i = gridCol; i < 9; i += 3) {
         for (let j = tileCol; j < 9; j += 3) {
             invalNums += boardType[i][j];
@@ -332,7 +325,7 @@ function validCol(boardType, gridId, tileId, num) {
 function validRow(boardType, gridId, tileId, num) {
     let gridRow = Math.floor(gridId / 3) * 3;
     let tileRow = Math.floor(tileId / 3) * 3;
-    let invalNums = "";
+    let invalNums = '';
     for (let i = 0; i < 3; i++) {
         invalNums += boardType[gridRow + i].substring(tileRow, tileRow + 3);
     }
@@ -385,7 +378,6 @@ function delGame() {
     clearInterval(timerVar);
     document.getElementById('timer').remove();
     document.getElementById('gameControls').style.display = "none";
-    //console.log('hit');
 }
 
 // checks board for empty tiles
@@ -398,13 +390,6 @@ function checkFull(boardType) {
     return true;
 }
 
-function undoMove() {
-    tileId = moves[moves.length - 1];
-    moves.pop();
-    document.getElementById(tileId).innerText = ' ';
-    updateBoard('.', board, tileId[0] - 1, tileId[1]) - 1;
-}
-
 // keeps track of and updates time
 function countTimer() {
     ++totalSeconds;
@@ -412,12 +397,12 @@ function countTimer() {
     var minute = Math.floor((totalSeconds - hour * 3600) / 60);
     var seconds = totalSeconds - (hour * 3600 + minute * 60);
     if (hour < 10)
-        hour = "0" + hour;
+        hour = '0' + hour;
     if (minute < 10)
-        minute = "0" + minute;
+        minute = '0' + minute;
     if (seconds < 10)
-        seconds = "0" + seconds;
-    document.getElementById("timer").innerHTML = hour + ":" + minute + ":" + seconds;
+        seconds = '0' + seconds;
+    document.getElementById("timer").innerHTML = hour + ':' + minute + ':' + seconds;
 }
 
 //determines if user is in note-taking mode
