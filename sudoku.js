@@ -207,15 +207,14 @@ function replaceNum() {
         } else {
             if (this.notes == true) {
                 let gridId = '' + this.id + 'g';
-                let grid = document.getElementById(gridId);
-                grid.remove();
+                document.getElementById(gridId).remove();
                 this.notes = false;
             }
             let x = parseInt(this.id[0]) - 1;
             let y = parseInt(this.id[1]) - 1;
             this.error = true;
             this.innerText = selectedNum.innerText;
-            this.style.color = "red";
+            this.style.color = "black";
             this.classList.add("selectedNumber");
             updateBoard(selectedNum.innerText, board, x, y);
 
