@@ -2,6 +2,8 @@ var totErr = 0;
 
 var selectedNum;
 var squareSelected;
+let noteMode = false;
+let eraseMode = false;
 const numbers = document.querySelector('.number');
 
 // . represents empty space
@@ -108,6 +110,7 @@ function createGame(diff) {
                 square.innerText = " ";
                 square.readOnly = false;
                 square.error = true;
+                square.notes = false;
             }
             else {
                 square.innerText = solutionBoard[i - 1][j - 1];
@@ -127,22 +130,36 @@ function createGame(diff) {
         number.classList.add("number");
         document.getElementById("numberBar").appendChild(number);
     }
+    let note = document.createElement("div");
+    note.classList.add("number");
+    note.innerText = "Note";
+    note.id = "note";
+    note.addEventListener("click", toggleNote);
+    document.getElementById("numberBar").appendChild(note);
 
+    let erase = document.createElement("div");
+    erase.classList.add("number");
+    erase.innerText = "Erase";
+    erase.id = "erase";
+    erase.addEventListener("click", eraseNum);
+    document.getElementById("numberBar").appendChild(erase);
 }
 
 // Handles selecting a number from number bar
 function selectNumber() {
+    document.getElementById("erase").classList.remove("selectedNumber");
+    eraseMode = false;
     if (selectedNum != null) {
-        selectedNum.classList.remove("selected-number")
+        selectedNum.classList.remove("selectedNumber")
     }
     selectedNum = this;
-    selectedNum.classList.add("selected-number");
+    selectedNum.classList.add("selectedNumber");
     for (let i = 1; i <= 9; i++) {
         for (let j = 1; j <= 9; j++) {
             curr = document.getElementById('' + i + j);
-            curr.classList.remove("selected-number");
+            curr.classList.remove("selectedNumber");
             if (curr.innerText == this.innerText) {
-                curr.classList.add("selected-number");
+                curr.classList.add("selectedNumber");
             }
         }
     }
@@ -150,15 +167,57 @@ function selectNumber() {
 
 // Replace board square with selected num
 function replaceNum() {
-    if (selectedNum && !(this.readOnly)) {
+    if (eraseMode == true && !this.readOnly) {
+        if (this.notes == true) {
+            let gridId = '' + this.id + 'g';
+            let grid = document.getElementById(gridId)
+            document.getElementById(gridId).remove();
+            this.notes = false;
+        }
         let x = parseInt(this.id[0]) - 1;
         let y = parseInt(this.id[1]) - 1;
-        this.error = true;
-        moves.push(this.id);
-        this.innerText = selectedNum.innerText;
-        this.style.color = "red";
-        this.classList.add("selected-number");
-        updateBoard(selectedNum.innerText, board, x, y);
+        this.innerText = ' ';
+        updateBoard('.', board, x, y);
+    }
+    if (selectedNum && !(this.readOnly)) {
+        if (noteMode == true) {
+            if (this.notes == false) {
+                this.innerText = '';
+                let noteGrid = document.createElement("div");
+                noteGrid.id = '' + this.id + 'g';
+                noteGrid.classList.add("noteGrid");
+                this.appendChild(noteGrid);
+                for (let i = 1; i <= 9; i++) {
+                    let note = document.createElement("div");
+                    note.classList.add("squareNote");
+                    note.id = ''+ this.id + i;
+                    noteGrid.appendChild(note);
+                }
+            }
+            let noteId = '' + this.id + selectedNum.innerText;
+            let noteTile = document.getElementById(noteId);
+            if (noteTile.innerText != selectedNum.innerText) {
+                noteTile.innerText = selectedNum.innerText;
+            }
+            this.notes = true;
+            
+        } else {
+            if (this.notes == true) {
+                let gridId = '' + this.id + 'g';
+                let grid = document.getElementById(gridId);
+                grid.remove();
+                this.notes = false;
+            }
+            let x = parseInt(this.id[0]) - 1;
+            let y = parseInt(this.id[1]) - 1;
+            this.error = true;
+            moves.push(this.id);
+            this.innerText = selectedNum.innerText;
+            this.style.color = "red";
+            this.classList.add("selectedNumber");
+            updateBoard(selectedNum.innerText, board, x, y);
+            
+        }
     }
 }
 
@@ -346,4 +405,45 @@ function countTimer() {
     if (seconds < 10)
         seconds = "0" + seconds;
     document.getElementById("timer").innerHTML = hour + ":" + minute + ":" + seconds;
+}
+
+//determines if user is in note-taking mode
+function toggleNote() {
+    let noteKey = document.getElementById("note");
+    if (eraseMode == true) {
+        document.getElementById("erase").classList.remove("selectedNumber");
+        eraseMode = false;
+    }
+    if (noteMode == false) {
+        noteMode = true;
+        noteKey.classList.add("selectedNumber");
+    } else {
+        noteMode = false;
+        noteKey.classList.remove("selectedNumber");
+    }
+}
+
+function eraseNum() {
+    let eraseFlag = document.getElementById("erase");
+    if (eraseMode == false) {
+        if (selectedNum) {
+            selectedNum.classList.remove("selectedNumber");
+        }
+        if (noteMode == true) {
+            document.getElementById("note").classList.remove("selectedNumber");
+            noteMode = false;
+        }
+        selectedNum = null;
+        eraseMode = true;
+        eraseFlag.classList.add("selectedNumber");
+        for (let i = 1; i <= 9; i++) {
+            for (let j = 1; j <= 9; j++) {
+                curr = document.getElementById('' + i + j);
+                curr.classList.remove("selectedNumber");
+            }
+        }
+    } else {
+        eraseMode = false;
+        eraseFlag.classList.remove("selectedNumber");
+    }
 }
