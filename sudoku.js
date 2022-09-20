@@ -1,9 +1,11 @@
 var totErr = 0;
-
 var selectedNum;
 var squareSelected;
+
+// flags for numBar buttons
 let noteMode = false;
 let eraseMode = false;
+
 const numbers = document.querySelector('.number');
 
 // . represents empty space
@@ -20,6 +22,7 @@ var board = [
     "........."
 ]
 
+// used for reset button
 var startingBoard;
 
 // holds previous moves for undo button
@@ -59,11 +62,13 @@ window.onload = function () {
     document.getElementById("difficultyList").style.display = "none";
 }
 
+// handles beginning elements
 function start() {
     document.getElementById("difficultyList").style.display = "block";
     document.getElementById("start").style.display = "none";
 }
 
+// creates initial board and creates game buttons
 function createGame(diff) {
     moves = [];
     document.getElementById("difficultyList").style.display = "none";
@@ -87,7 +92,7 @@ function createGame(diff) {
     timerVar = setInterval(countTimer, 1000);
     totalSeconds = 0;
 
-
+    // create board elements
     let htmlBoard = document.createElement("div");
     let numBar = document.createElement("div");
     htmlBoard.id = "board";
@@ -119,6 +124,7 @@ function createGame(diff) {
             }
         }
     }
+    // copies board into startingBoard
     startingBoard = [...board];
 
     // create number selection bar
@@ -130,6 +136,7 @@ function createGame(diff) {
         number.classList.add("number");
         document.getElementById("numberBar").appendChild(number);
     }
+    // create note div at end of numberBar
     let note = document.createElement("div");
     note.classList.add("number");
     note.innerText = "Note";
@@ -137,6 +144,7 @@ function createGame(diff) {
     note.addEventListener("click", toggleNote);
     document.getElementById("numberBar").appendChild(note);
 
+    // create erase div at end of numberBar
     let erase = document.createElement("div");
     erase.classList.add("number");
     erase.innerText = "Erase";
@@ -167,6 +175,7 @@ function selectNumber() {
 
 // Replace board square with selected num
 function replaceNum() {
+    // handles erasing numbers
     if (eraseMode == true && !this.readOnly) {
         if (this.notes == true) {
             let gridId = '' + this.id + 'g';
@@ -190,7 +199,7 @@ function replaceNum() {
                 for (let i = 1; i <= 9; i++) {
                     let note = document.createElement("div");
                     note.classList.add("squareNote");
-                    note.id = ''+ this.id + i;
+                    note.id = '' + this.id + i;
                     noteGrid.appendChild(note);
                 }
             }
@@ -200,7 +209,7 @@ function replaceNum() {
                 noteTile.innerText = selectedNum.innerText;
             }
             this.notes = true;
-            
+
         } else {
             if (this.notes == true) {
                 let gridId = '' + this.id + 'g';
@@ -216,7 +225,7 @@ function replaceNum() {
             this.style.color = "red";
             this.classList.add("selectedNumber");
             updateBoard(selectedNum.innerText, board, x, y);
-            
+
         }
     }
 }
@@ -228,6 +237,7 @@ function updateBoard(num, boardType, x, y) {
     boardType[x] = boardArr.join("");
 }
 
+// checks for errors in current board
 function checkError() {
     errors = 0;
     for (let i = 1; i <= 9; i++) {
@@ -257,6 +267,7 @@ function checkError() {
             }
         }
     }
+    // handles error checking screen
     document.getElementById("errText").style.color = "red";
     document.getElementById("errText").innerHTML = "Errors: " + errors +
         "<br></br>Total Errors Made: " + totErr;
@@ -273,6 +284,7 @@ function off() {
     document.getElementById("errOverlay").style.display = "none";
 }
 
+// generates valid sudoku board
 function generateBoards() {
     for (let i = 0; i < 9; i++) {
         for (let j = 0; j < 9; j++) {
@@ -393,6 +405,7 @@ function undoMove() {
     updateBoard('.', board, tileId[0] - 1, tileId[1]) - 1;
 }
 
+// keeps track of and updates time
 function countTimer() {
     ++totalSeconds;
     var hour = Math.floor(totalSeconds / 3600);
@@ -423,6 +436,7 @@ function toggleNote() {
     }
 }
 
+// handles erasing numbers on board
 function eraseNum() {
     let eraseFlag = document.getElementById("erase");
     if (eraseMode == false) {
